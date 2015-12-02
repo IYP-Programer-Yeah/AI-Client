@@ -4,6 +4,8 @@
 #include <iostream>
 #include <time.h>
 
+#define min(a,b) a>b?b:a
+
 class tile
 {
 public:
@@ -28,6 +30,10 @@ public:
 		width = terrain->Width();
 		height = terrain->Height();
 		world = new tile[width*height];
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < height; j++)
+				if (terrain->Get(i, j)>0)
+					get_tile(i, j)->Blocked = true;
 	}
 
 	bool is_blocked(int x, int y)

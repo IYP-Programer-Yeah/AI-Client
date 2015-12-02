@@ -27,6 +27,8 @@ namespace ConquestOfCastles{
 		if (units.size() < 4 || units.size() <= Mines.size())
 			Castle->Make(Direction::EAST, UnitType::WORKER);
 		bool *WorkerOnGold = new bool[units.size()];
+		int *WorkersNearestNode = new int[units.size() * 2];
+		srand((int)time(0));
 		for (int i = 1; i < units.size(); i++)
 		{
 			WorkerOnGold[i] = false;
@@ -34,11 +36,57 @@ namespace ConquestOfCastles{
 				if (units[i]->Pos() == Mines[j]->Pos() && Mines[j]->GoldAmount() != 0)
 				{
 					WorkerOnGold[i] = true;
+					WorkersNearestNode[i * 2] = 0;
+					WorkersNearestNode[i * 2 + 1] = 0;
 					break;
 				}
 			if (!WorkerOnGold[i])
 			{
-				srand((int)time(0));
+				WorkersNearestNode[i * 2] = min(Map.width - units[i]->Pos().X(), units[i]->Pos().X());
+				WorkersNearestNode[i * 2 + 1] = min(Map.height - units[i]->Pos().Y(), units[i]->Pos().Y());
+				int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
+
+				int UnitX = units[i]->Pos().X(), UnitY = units[i]->Pos().Y();
+
+				for (int j = 0; j < WorkersNearestNode[i * 2] && j*j < dis2; j++)
+					for (int k = 0; k < WorkersNearestNode[i * 2 + 1] && dis2 > k*k + j*j; k++)
+						if (Map.get_tile(UnitX + j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY + k))
+						{
+							WorkersNearestNode[i * 2] = j;
+							WorkersNearestNode[i * 2 + 1] = k;
+							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
+							break;
+						}
+
+				for (int j = 0; j < Map.width&&j*j < dis2; j++)
+					for (int k = 0; k >= -WorkersNearestNode[i * 2 + 1] && dis2>k*k + j*j; k--)
+						if (Map.get_tile(UnitX + j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY + k))
+						{
+							WorkersNearestNode[i * 2] = j;
+							WorkersNearestNode[i * 2 + 1] = k;
+							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
+							break;
+						}
+
+				for (int j = 0; j >= -WorkersNearestNode[i * 2] && j*j < dis2; j--)
+					for (int k = 0; k < WorkersNearestNode[i * 2 + 1] && dis2 > k*k + j*j; k++)
+						if (Map.get_tile(UnitX + j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY + k))
+						{
+							WorkersNearestNode[i * 2] = j;
+							WorkersNearestNode[i * 2 + 1] = k;
+							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
+							break;
+						}
+
+				for (int j = 0; j >= -WorkersNearestNode[i * 2] && j*j < dis2; j--)
+					for (int k = 0; k >= -WorkersNearestNode[i * 2 + 1] && k*k + j*j < dis2; k--)
+						if (Map.get_tile(UnitX + j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY + k))
+						{
+							WorkersNearestNode[i * 2] = j;
+							WorkersNearestNode[i * 2 + 1] = k;
+							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
+							break;
+						}
 				float chance = (rand() % 4) / 4.0;
 
 				if (chance < 0.25)
@@ -52,6 +100,7 @@ namespace ConquestOfCastles{
 			}
 
 		}
+		srand((int)time(0));
 
 	}
 
