@@ -5,6 +5,8 @@
 #include <time.h>
 
 #define min(a,b) a>b?b:a
+#define max(a,b) a<b?b:a
+#define clamp(x,a,b) min(max(a,x),b)
 
 class tile
 {
@@ -38,10 +40,14 @@ public:
 
 	bool is_blocked(int x, int y)
 	{
+		if (x != clamp(x, 0, width - 1) || y != clamp(y, 0, height - 1))
+			return true;
 		return world[x + y*width].Blocked;
 	}
 	tile* get_tile(int x, int y)
 	{
+		x = clamp(x, 0, width - 1);
+		y = clamp(y, 0, height - 1);
 		return &world[x + y*width];
 	}
 };

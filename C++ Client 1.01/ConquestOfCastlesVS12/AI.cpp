@@ -42,14 +42,15 @@ namespace ConquestOfCastles{
 				}
 			if (!WorkerOnGold[i])
 			{
-				WorkersNearestNode[i * 2] = min(Map.width - units[i]->Pos().X(), units[i]->Pos().X());
-				WorkersNearestNode[i * 2 + 1] = min(Map.height - units[i]->Pos().Y(), units[i]->Pos().Y());
+				WorkersNearestNode[i * 2] = max(Map.width - units[i]->Pos().X(), units[i]->Pos().X() + 1);
+				WorkersNearestNode[i * 2 + 1] = max(Map.height - units[i]->Pos().Y(), units[i]->Pos().Y() + 1);
 				int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
 
 				int UnitX = units[i]->Pos().X(), UnitY = units[i]->Pos().Y();
 
 				for (int j = 0; j < WorkersNearestNode[i * 2] && j*j < dis2; j++)
 					for (int k = 0; k < WorkersNearestNode[i * 2 + 1] && dis2 > k*k + j*j; k++)
+					{
 						if (Map.get_tile(UnitX + j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY + k))
 						{
 							WorkersNearestNode[i * 2] = j;
@@ -57,36 +58,29 @@ namespace ConquestOfCastles{
 							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
 							break;
 						}
+						if (Map.get_tile(UnitX - j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX - j, UnitY + k))
+						{
+							WorkersNearestNode[i * 2] = -j;
+							WorkersNearestNode[i * 2 + 1] = k;
+							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
+							break;
+						}
+						if (Map.get_tile(UnitX + j, UnitY - k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY - k))
+						{
+							WorkersNearestNode[i * 2] = j;
+							WorkersNearestNode[i * 2 + 1] = -k;
+							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
+							break;
+						}
+						if (Map.get_tile(UnitX - j, UnitY - k)->Terrain == -1 && !Map.is_blocked(UnitX - j, UnitY - k))
+						{
+							WorkersNearestNode[i * 2] = -j;
+							WorkersNearestNode[i * 2 + 1] = -k;
+							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
+							break;
+						}
+					}
 
-				for (int j = 0; j < Map.width&&j*j < dis2; j++)
-					for (int k = 0; k >= -WorkersNearestNode[i * 2 + 1] && dis2>k*k + j*j; k--)
-						if (Map.get_tile(UnitX + j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY + k))
-						{
-							WorkersNearestNode[i * 2] = j;
-							WorkersNearestNode[i * 2 + 1] = k;
-							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
-							break;
-						}
-
-				for (int j = 0; j >= -WorkersNearestNode[i * 2] && j*j < dis2; j--)
-					for (int k = 0; k < WorkersNearestNode[i * 2 + 1] && dis2 > k*k + j*j; k++)
-						if (Map.get_tile(UnitX + j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY + k))
-						{
-							WorkersNearestNode[i * 2] = j;
-							WorkersNearestNode[i * 2 + 1] = k;
-							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
-							break;
-						}
-
-				for (int j = 0; j >= -WorkersNearestNode[i * 2] && j*j < dis2; j--)
-					for (int k = 0; k >= -WorkersNearestNode[i * 2 + 1] && k*k + j*j < dis2; k--)
-						if (Map.get_tile(UnitX + j, UnitY + k)->Terrain == -1 && !Map.is_blocked(UnitX + j, UnitY + k))
-						{
-							WorkersNearestNode[i * 2] = j;
-							WorkersNearestNode[i * 2 + 1] = k;
-							int dis2 = WorkersNearestNode[i * 2] * WorkersNearestNode[i * 2] + WorkersNearestNode[i * 2 + 1] * WorkersNearestNode[i * 2 + 1];
-							break;
-						}
 				float chance = (rand() % 4) / 4.0;
 
 				if (chance < 0.25)
