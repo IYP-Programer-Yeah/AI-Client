@@ -1,7 +1,0 @@
-2015-12-02 09:22:38,106 INFO  [default] Server address: localhost
-2015-12-02 09:22:38,120 INFO  [default] Server port: 1111
-2015-12-02 09:22:38,127 INFO  [default] Cycle time: 1000
-2015-12-02 09:22:38,131 INFO  [default] Player name: "Arc"
-2015-12-02 09:22:38,148 INFO  [default] Attempting to connect to localhost on port 1111
-2015-12-02 09:22:40,197 FATAL [default] Connect to server failed with error: : 0
-2015-12-02 09:22:40,202 WARN  [default] Aborting application. Reason: Fatal log at [c:\users\taha\documents\visual studio 2015\projects\conquestofcastles\conquestofcastles\tcpconnection.h:73]
