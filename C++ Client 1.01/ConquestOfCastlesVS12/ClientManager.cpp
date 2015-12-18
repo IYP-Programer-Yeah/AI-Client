@@ -122,6 +122,10 @@ namespace ConquestOfCastles {
 			cerr << "Thread failed to create." << endl;
 			exit(0);
 		}
+		catch (NetworkException e)
+		{
+			exit(0);
+		}
 	}
 
 	PlayerAiRunner::PlayerAiRunner(WorldModel* world, IPlayerAI* player_ai) : world(world), player_ai(player_ai) {}

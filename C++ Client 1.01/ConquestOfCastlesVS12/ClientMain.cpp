@@ -1,5 +1,7 @@
+#include "WorldModel.h"
 #include "ClientManager.h"
-#include "AI.h"
+#include "IPlayerAI.h"
+#include "PlayerAI.h"
 
 #include <string>
 
